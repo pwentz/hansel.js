@@ -249,15 +249,178 @@ describe('selectors', () => {
     })
 
     context('separated by space', () => {
-      // context('class nested inside tag')
-      // context('id nested inside tag')
-      // context('tag nested inside tag')
-      // context('class nested inside class')
-      // context('id nested inside class')
-      // context('tag nested inside class')
-      // context('class nested inside id')
-      // context('id nested inside id')
-      // context('tag nested inside id')
+      context('class nested inside tag', () => {
+        it('returns the classes nested inside the selected tag', () => {
+          const testNode = document.getElementById('test-node')
+          const parentDiv = document.createElement('section')
+          const nestedChildOne = document.createElement('div')
+          const nestedChildTwo = document.createElement('div')
+
+          testNode.appendChild(parentDiv)
+          parentDiv.appendChild(nestedChildOne)
+          parentDiv.appendChild(nestedChildTwo)
+
+          nestedChildOne.classList.add('wow')
+          nestedChildTwo.classList.add('wow')
+
+          const result = H('section .wow')
+
+          assert.deepEqual(result, [nestedChildOne, nestedChildTwo])
+        })
+      })
+
+      context('id nested inside tag', () => {
+        it('returns the id nested inside the selected tag', () => {
+          const testNode = document.getElementById('test-node')
+          const parentDiv = document.createElement('section')
+          const nestedChildOne = document.createElement('div')
+
+          testNode.appendChild(parentDiv)
+          parentDiv.appendChild(nestedChildOne)
+
+          nestedChildOne.id = 'wow'
+
+          const result = H('section #wow')
+
+          assert.deepEqual(result, nestedChildOne)
+        })
+      })
+
+      context('tag nested inside tag', () => {
+        it('returns the tags nested inside the selected tag', () => {
+          const testNode = document.getElementById('test-node')
+          const parentDiv = document.createElement('section')
+          const nestedChildOne = document.createElement('article')
+          const nestedChildTwo = document.createElement('article')
+
+          testNode.appendChild(parentDiv)
+          parentDiv.appendChild(nestedChildOne)
+          parentDiv.appendChild(nestedChildTwo)
+
+          const result = H('section article')
+
+          assert.deepEqual(result, [nestedChildOne, nestedChildTwo])
+        })
+      })
+
+      context('class nested inside class', () => {
+        it('returns the class nested inside the selected class', () => {
+          const testNode = document.getElementById('test-node')
+          const parentDiv = document.createElement('div')
+          const nestedChildOne = document.createElement('div')
+          const nestedChildTwo = document.createElement('div')
+
+          testNode.appendChild(parentDiv)
+          parentDiv.appendChild(nestedChildOne)
+          parentDiv.appendChild(nestedChildTwo)
+
+          parentDiv.classList.add('neat')
+          nestedChildOne.classList.add('ok')
+          nestedChildTwo.classList.add('ok')
+
+          const result = H('.neat .ok')
+
+          assert.deepEqual(result, [nestedChildOne, nestedChildTwo])
+        })
+      })
+
+      context('id nested inside class', () => {
+        it('returns the id nested inside the selected class', () => {
+          const testNode = document.getElementById('test-node')
+          const parentDiv = document.createElement('div')
+          const nestedChildOne = document.createElement('div')
+
+          testNode.appendChild(parentDiv)
+          parentDiv.appendChild(nestedChildOne)
+
+          parentDiv.classList.add('neat')
+          nestedChildOne.id = 'ok'
+
+          const result = H('.neat #ok')
+
+          assert.equal(result, nestedChildOne)
+        })
+      })
+
+      context('tag nested inside class', () => {
+        it('returns the tag(s) nested inside the selected class', () => {
+          const testNode = document.getElementById('test-node')
+          const parentDiv = document.createElement('div')
+          const nestedChildOne = document.createElement('section')
+          const nestedChildTwo = document.createElement('section')
+
+          testNode.appendChild(parentDiv)
+          parentDiv.appendChild(nestedChildOne)
+          parentDiv.appendChild(nestedChildTwo)
+
+          parentDiv.classList.add('neat')
+
+          const result = H('.neat section')
+
+          assert.deepEqual(result, [nestedChildOne, nestedChildTwo])
+        })
+      })
+
+      context('class nested inside id', () => {
+        it('returns the class(es) nested inside the selected id', () => {
+          const testNode = document.getElementById('test-node')
+          const parentDiv = document.createElement('div')
+          const nestedChildOne = document.createElement('div')
+          const nestedChildTwo = document.createElement('div')
+
+          testNode.appendChild(parentDiv)
+          parentDiv.appendChild(nestedChildOne)
+          parentDiv.appendChild(nestedChildTwo)
+
+          parentDiv.id = 'cool'
+          nestedChildOne.classList.add('neat')
+          nestedChildTwo.classList.add('neat')
+
+          const result = H('#cool .neat')
+
+          assert.deepEqual(result, [nestedChildOne, nestedChildTwo])
+        })
+      })
+
+      context('id nested inside id', () => {
+        it('returns the id nested inside the selected id', () => {
+          const testNode = document.getElementById('test-node')
+          const parentDiv = document.createElement('div')
+          const nestedChildOne = document.createElement('div')
+
+          testNode.appendChild(parentDiv)
+          parentDiv.appendChild(nestedChildOne)
+
+          parentDiv.id = 'cool'
+          nestedChildOne.id = 'neat'
+
+          const result = H('#cool #neat')
+
+          assert.equal(result, nestedChildOne)
+        })
+      })
+
+      context('tag nested inside id', () => {
+        it('returns the tag(s) nested inside the selected id', () => {
+          const testNode = document.getElementById('test-node')
+          const parentDiv = document.createElement('div')
+          const nestedChildOne = document.createElement('article')
+          const nestedChildTwo = document.createElement('article')
+
+          testNode.appendChild(parentDiv)
+          parentDiv.appendChild(nestedChildOne)
+          parentDiv.appendChild(nestedChildTwo)
+
+          parentDiv.id = 'cool'
+
+          const result = H('#cool article')
+
+          assert.deepEqual(result, [nestedChildOne, nestedChildTwo])
+        })
+      })
     })
+  })
+
+  describe('more than two selectors', () => {
   })
 })
