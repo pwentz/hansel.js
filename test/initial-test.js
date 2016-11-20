@@ -504,9 +504,25 @@ describe('selectors', () => {
           assert.deepEqual(result, [])
         })
       })
+
+      context('neither elements exist', () => {
+        it('returns an empty array', () => {
+          const testNode = document.getElementById('test-node')
+          const parentDiv = document.createElement('div')
+
+          testNode.appendChild(parentDiv)
+
+          const result = H('#wow .cool')
+
+          assert.deepEqual(result, [])
+        })
+      })
     })
   })
 
   describe('more than two selectors', () => {
+    context('comma separated selectors', () => {
+      it('returns all matching selectors')
+    })
   })
 })
