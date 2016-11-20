@@ -199,16 +199,19 @@ describe('selectors', () => {
           const testNode = document.getElementById('test-node')
           const targetOne = document.createElement('div')
           const targetTwo = document.createElement('div')
+          const targetThree = document.createElement('div')
 
           testNode.appendChild(targetOne)
           testNode.appendChild(targetTwo)
+          testNode.appendChild(targetThree)
 
           targetOne.id = 'ok'
           targetTwo.classList.add('neat')
+          targetThree.classList.add('neat')
 
           const result = H('#ok, .neat')
 
-          assert.deepEqual(result, [targetOne, targetTwo])
+          assert.deepEqual(result, [targetOne, targetTwo, targetThree])
         })
       })
 
@@ -244,6 +247,40 @@ describe('selectors', () => {
           const result = H('#ok, section')
 
           assert.deepEqual(result, [targetOne, targetTwo])
+        })
+      })
+
+      context('first element does not exist', () => {
+        it('returns only the second element', () => {
+          const testNode = document.getElementById('test-node')
+          const targetOne = document.createElement('div')
+          const targetTwo = document.createElement('div')
+
+          testNode.appendChild(targetOne)
+          testNode.appendChild(targetTwo)
+
+          targetTwo.id = 'ok'
+
+          const result = H('.wow, #ok')
+
+          assert.deepEqual(result, targetTwo)
+        })
+      })
+
+      context('second element does not exist', () => {
+        it('only returns the first element', () => {
+          const testNode = document.getElementById('test-node')
+          const targetOne = document.createElement('div')
+          const targetTwo = document.createElement('div')
+
+          testNode.appendChild(targetOne)
+          testNode.appendChild(targetTwo)
+
+          targetOne.id = 'ok'
+
+          const result = H('#ok, .wow')
+
+          assert.deepEqual(result, targetOne)
         })
       })
     })
@@ -292,14 +329,16 @@ describe('selectors', () => {
           const parentDiv = document.createElement('section')
           const nestedChildOne = document.createElement('article')
           const nestedChildTwo = document.createElement('article')
+          const nestedChildThree = document.createElement('article')
 
           testNode.appendChild(parentDiv)
           parentDiv.appendChild(nestedChildOne)
           parentDiv.appendChild(nestedChildTwo)
+          parentDiv.appendChild(nestedChildThree)
 
           const result = H('section article')
 
-          assert.deepEqual(result, [nestedChildOne, nestedChildTwo])
+          assert.deepEqual(result, [nestedChildOne, nestedChildTwo, nestedChildThree])
         })
       })
 
@@ -416,6 +455,37 @@ describe('selectors', () => {
           const result = H('#cool article')
 
           assert.deepEqual(result, [nestedChildOne, nestedChildTwo])
+        })
+      })
+
+      context('first element does not exist', () => {
+        it('returns an empty array', () => {
+          const testNode = document.getElementById('test-node')
+          const parentDiv = document.createElement('div')
+          const nestedChildOne = document.createElement('div')
+
+          testNode.appendChild(nestedChildOne)
+
+          nestedChildOne.id = 'wow'
+
+          const result = H('.cool #wow')
+
+          assert.deepEqual(result, [])
+        })
+      })
+
+      context('second element does not exist', () => {
+        it('returns an empty array', () => {
+          const testNode = document.getElementById('test-node')
+          const parentDiv = document.createElement('div')
+
+          testNode.appendChild(parentDiv)
+
+          parentDiv.id = 'wow'
+
+          const result = H('#wow .cool')
+
+          assert.deepEqual(result, [])
         })
       })
     })
