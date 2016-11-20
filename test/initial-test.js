@@ -293,7 +293,6 @@ describe('selectors', () => {
           testNode.appendChild(targetOne)
           testNode.appendChild(targetTwo)
 
-          console.log('below')
           const result = H('#ok, .wow')
 
           assert.deepEqual(result, [])
@@ -522,7 +521,53 @@ describe('selectors', () => {
 
   describe('more than two selectors', () => {
     context('comma separated selectors', () => {
-      it('returns all matching selectors')
+      it('returns all matching selectors', () => {
+        const testNode = document.getElementById('test-node')
+        const targetOne = document.createElement('div')
+        const targetTwo = document.createElement('section')
+        const targetThree = document.createElement('div')
+        const targetFour = document.createElement('div')
+
+        testNode.appendChild(targetOne)
+        testNode.appendChild(targetTwo)
+        testNode.appendChild(targetThree)
+        testNode.appendChild(targetFour)
+
+        targetOne.id = 'ok'
+        targetThree.classList.add('neat')
+        targetFour.classList.add('neat')
+
+        const result = H('#ok, section, .neat')
+
+        assert.deepEqual(result, [targetOne, targetTwo, targetThree, targetFour])
+      })
+    })
+
+    context.skip('space separated values', () => {
+      it('returns the last element nested inside the second nested inside first', () => {
+        const testNode = document.getElementById('test-node')
+        const parentDiv = document.createElement('div')
+        const targetOne = document.createElement('section')
+        const targetTwo = document.createElement('div')
+        const targetThree = document.createElement('div')
+        const targetFour = document.createElement('div')
+
+        testNode.appendChild(parentDiv)
+        parentDiv.appendChild(targetOne)
+        targetOne.appendChild(targetTwo)
+        targetOne.appendChild(targetThree)
+        // targetFour not appended to parents
+        testNode.appendChild(targetFour)
+
+        parentDiv.id = 'ok'
+        targetTwo.classList.add('neat')
+        targetThree.classList.add('neat')
+        targetFour.classList.add('neat')
+
+        const result = H('#ok section .neat')
+
+        assert.deepEqual(result, [targetTwo, targetThree])
+      })
     })
   })
 })
