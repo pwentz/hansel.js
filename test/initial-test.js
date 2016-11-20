@@ -283,6 +283,22 @@ describe('selectors', () => {
           assert.deepEqual(result, targetOne)
         })
       })
+
+      context('neither element exist', () => {
+        it('returns an empty array', () => {
+          const testNode = document.getElementById('test-node')
+          const targetOne = document.createElement('div')
+          const targetTwo = document.createElement('div')
+
+          testNode.appendChild(targetOne)
+          testNode.appendChild(targetTwo)
+
+          console.log('below')
+          const result = H('#ok, .wow')
+
+          assert.deepEqual(result, [])
+        })
+      })
     })
 
     context('separated by space', () => {
