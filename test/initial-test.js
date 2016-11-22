@@ -543,7 +543,7 @@ describe('selectors', () => {
       })
     })
 
-    context.skip('space separated values', () => {
+    context('space separated values', () => {
       it('returns the last element nested inside the second nested inside first', () => {
         const testNode = document.getElementById('test-node')
         const parentDiv = document.createElement('div')
@@ -567,6 +567,26 @@ describe('selectors', () => {
         const result = H('#ok section .neat')
 
         assert.deepEqual(result, [targetTwo, targetThree])
+      })
+
+      context('middle selector is not child of first', () => {
+        it('returns an empty array', () => {
+          const testNode = document.getElementById('test-node')
+          const parentDiv = document.createElement('div')
+          const targetOne = document.createElement('div')
+          const targetTwo = document.createElement('div')
+
+          testNode.appendChild(parentDiv)
+          parentDiv.appendChild(targetOne)
+
+          parentDiv.id = 'ok'
+          targetOne.classList.add('wow')
+          targetTwo.classList.add('neat')
+
+          const result = H('#ok .wow .neat')
+
+          assert.deepEqual(result, [])
+        })
       })
     })
   })
