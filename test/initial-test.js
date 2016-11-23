@@ -379,7 +379,7 @@ describe('selectors', () => {
       })
 
       context('id nested inside class', () => {
-        it('returns the id nested inside the selected class', () => {
+        it('returns the matching node nested inside the selected class', () => {
           const testNode = document.getElementById('test-node')
           const parentDiv = document.createElement('div')
           const nestedChildOne = document.createElement('div')
@@ -544,30 +544,61 @@ describe('selectors', () => {
     })
 
     context('space separated values', () => {
-      it('returns the last element nested inside the second nested inside first', () => {
-        const testNode = document.getElementById('test-node')
-        const parentDiv = document.createElement('div')
-        const targetOne = document.createElement('section')
-        const targetTwo = document.createElement('div')
-        const targetThree = document.createElement('div')
-        const targetFour = document.createElement('div')
+      context('multiple matching nodes, but not all are children', () => {
+        it('returns the last element nested inside the second nested inside first', () => {
+          const testNode = document.getElementById('test-node')
+          const parentDiv = document.createElement('div')
+          const targetOne = document.createElement('section')
+          const targetTwo = document.createElement('div')
+          const targetThree = document.createElement('div')
+          const targetFour = document.createElement('div')
 
-        testNode.appendChild(parentDiv)
-        parentDiv.appendChild(targetOne)
-        targetOne.appendChild(targetTwo)
-        targetOne.appendChild(targetThree)
-        // targetFour not appended to parents
-        testNode.appendChild(targetFour)
+          testNode.appendChild(parentDiv)
+          parentDiv.appendChild(targetOne)
+          targetOne.appendChild(targetTwo)
+          targetOne.appendChild(targetThree)
+          // targetFour not appended to parents
+          testNode.appendChild(targetFour)
 
-        parentDiv.id = 'ok'
-        targetTwo.classList.add('neat')
-        targetThree.classList.add('neat')
-        targetFour.classList.add('neat')
+          parentDiv.id = 'ok'
+          targetTwo.classList.add('neat')
+          targetThree.classList.add('neat')
+          targetFour.classList.add('neat')
 
-        const result = H('#ok section .neat')
+          const result = H('#ok section .neat')
 
-        assert.deepEqual(result, [targetTwo, targetThree])
+          assert.deepEqual(result, [targetTwo, targetThree])
+        })
+
+        context.skip("matching tags have children that also match", () => {
+          it('returns only the children of the child of the original parent', () => {
+            const testNode = document.getElementById('test-node')
+            const parentDiv = document.createElement('div')
+            const targetOne = document.createElement('div')
+            const targetTwo = document.createElement('div')
+            const targetThree = document.createElement('section')
+            const targetFour = document.createElement('section')
+
+            testNode.appendChild(parentDiv)
+            parentDiv.appendChild(targetThree)
+            targetThree.appendChild(targetOne)
+            // targetFour not appended to parents
+            testNode.appendChild(targetFour)
+            // has child too
+            targetFour.appendChild(targetTwo)
+
+            parentDiv.id = 'ok'
+            targetOne.classList.add('neat')
+            // both end nodes have matching classnames
+            targetTwo.classList.add('neat')
+
+            const result = H('#ok section .neat')
+
+            assert.deepEqual(result, targetOne)
+          })
+        })
       })
+
 
       context('middle selector is not child of first', () => {
         it('returns an empty array', () => {
@@ -577,7 +608,8 @@ describe('selectors', () => {
           const targetTwo = document.createElement('div')
 
           testNode.appendChild(parentDiv)
-          parentDiv.appendChild(targetOne)
+          testNode.appendChild(targetOne)
+          targetOne.appendChild(targetTwo)
 
           parentDiv.id = 'ok'
           targetOne.classList.add('wow')
@@ -588,6 +620,49 @@ describe('selectors', () => {
           assert.deepEqual(result, [])
         })
       })
+
+      context('first selector present, but not a parent', () => {
+        it('returns an empty array bc subsequent args are not nested', () => {
+          const testNode = document.getElementById('test-node')
+          const parentDiv = document.createElement('div')
+          const targetOne = document.createElement('div')
+          const targetTwo = document.createElement('div')
+
+          testNode.appendChild(parentDiv)
+          testNode.appendChild(targetOne)
+          testNode.appendChild(targetTwo)
+
+          parentDiv.id = 'wow'
+          targetOne.id = 'ok'
+          targetTwo.id = 'cool'
+
+          const result = H('#wow #ok #cool')
+
+          assert.deepEqual(result, [])
+        })
+      })
+
+      context('last selector is present, but not a child', () => {
+        it('returns an empty array', () => {
+          const testNode = document.getElementById('test-node')
+          const parentDiv = document.createElement('div')
+          const targetOne = document.createElement('div')
+          const targetTwo = document.createElement('div')
+
+          testNode.appendChild(parentDiv)
+          parentDiv.appendChild(targetOne)
+          testNode.appendChild(targetTwo)
+
+          parentDiv.id = 'wow'
+          targetOne.id = 'ok'
+          targetTwo.id = 'cool'
+
+          const result = H('#wow #ok #cool')
+
+          assert.deepEqual(result, [])
+        })
+      })
+
     })
   })
 })
